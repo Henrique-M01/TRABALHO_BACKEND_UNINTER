@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baozistore.api.model.Produto;
 import com.baozistore.api.repository.ProdutoRepository;
+import com.baozistore.api.repository.PedidoRepository;
 
 @RestController
 @RequestMapping("/produtos")
@@ -24,6 +25,9 @@ public class ProdutoController {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
+
+	@Autowired
+	private PedidoRepository pedidoRepository;
 
 	@PostMapping
 	public ResponseEntity<Produto> criar(@RequestBody Produto produto) {
@@ -65,9 +69,14 @@ public class ProdutoController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deletar(@PathVariable Long id) {
+	public ResponseEntity<?> deletar(@PathVariable Long id) {
 		if (!produtoRepository.existsById(id)) {
 			return ResponseEntity.notFound().build();
+		}
+		// nao deixa apagar se tiver pedido usando, senao da erro de chave estrangeira
+		if (pedidoRepository.existsByProdutoId(id)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body("Nao e possivel apagar: existem pedidos com esse produto");
 		}
 		produtoRepository.deleteById(id);
 		return ResponseEntity.noContent().build();

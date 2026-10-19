@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baozistore.api.model.Cliente;
 import com.baozistore.api.repository.ClienteRepository;
+import com.baozistore.api.repository.PedidoRepository;
 
 @RestController
 @RequestMapping("/clientes")
@@ -25,6 +26,9 @@ public class ClienteController {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
+
+	@Autowired
+	private PedidoRepository pedidoRepository;
 
 	// POST /clientes - cadastra um cliente novo
 	@PostMapping
@@ -71,9 +75,14 @@ public class ClienteController {
 
 	// DELETE /clientes/{id} - apaga o cliente
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deletar(@PathVariable Long id) {
+	public ResponseEntity<?> deletar(@PathVariable Long id) {
 		if (!clienteRepository.existsById(id)) {
 			return ResponseEntity.notFound().build();
+		}
+		// nao deixa apagar se tiver pedido usando, senao da erro de chave estrangeira
+		if (pedidoRepository.existsByClienteId(id)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body("Nao e possivel apagar: existem pedidos com esse cliente");
 		}
 		clienteRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
