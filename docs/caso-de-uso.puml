@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+actor "Usuário da API" as usuario
+
+rectangle "API REST - Baozi Store" {
+  usecase "Cadastrar Cliente" as UC1
+  usecase "Consultar Cliente por ID" as UC2
+  usecase "Listar Clientes" as UC3
+  usecase "Atualizar Cliente" as UC4
+  usecase "Apagar Cliente" as UC5
+
+  usecase "Cadastrar Produto" as UC6
+  usecase "Consultar Produto por ID" as UC7
+  usecase "Listar Produtos" as UC8
+  usecase "Atualizar Produto" as UC9
+  usecase "Apagar Produto" as UC10
+
+  usecase "Registrar Pedido" as UC11
+  usecase "Consultar Pedido por ID" as UC12
+  usecase "Listar Pedidos" as UC13
+  usecase "Atualizar Pedido" as UC14
+  usecase "Apagar Pedido" as UC15
+}
+
+usuario --> UC1
+usuario --> UC2
+usuario --> UC3
+usuario --> UC4
+usuario --> UC5
+usuario --> UC6
+usuario --> UC7
+usuario --> UC8
+usuario --> UC9
+usuario --> UC10
+usuario --> UC11
+usuario --> UC12
+usuario --> UC13
+usuario --> UC14
+usuario --> UC15
+
+@enduml
